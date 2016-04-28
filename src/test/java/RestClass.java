@@ -1,10 +1,11 @@
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
-import org.json.JSONString;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.ParseException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.jayway.restassured.RestAssured.get;
 
 /**
  * Created by Andrzej.Wudara on 2016-04-28.
@@ -29,9 +28,6 @@ public class RestClass {
         jsonObject = new JsonParser().parse(json).getAsJsonObject();
     }
 
-
-
-
     @Test
     /*
     Generate a new json that will be equal to the given one except for the title, that will be „CREATING NEW JSON” for each of the items.*//*
@@ -43,30 +39,46 @@ public class RestClass {
         JsonArray arr = jsonObject.getAsJsonArray("items");
         for (int i = 0; i < arr.size(); i++) {
             JsonElement element = arr.get(i).getAsJsonObject();
-            //System.out.println(element.toString());
             JsonObject jo = element.getAsJsonObject();
             jo.addProperty("title", "Creating new JSON");
             jo.remove("last_activity_date");
+            newJson += jo.toString();
+            if ((i<arr.size()-1)) newJson += ",";
         }
-
         newJson += "],";
-        jsonObject.getAsJsonPrimitive("has_more");
-        newJson += "\n \"has_more\":";
-        newJson += "\n \"quota_max\":";
-        newJson += "\n \"quota_remaining\":";
+        newJson += "\n \"has_more\":"+jsonObject.getAsJsonPrimitive("has_more")+",";
+        newJson += "\n \"quota_max\":"+jsonObject.getAsJsonPrimitive("quota_max")+",";
+        newJson += "\n \"quota_remaining\":"+jsonObject.getAsJsonPrimitive("quota_remaining");
         newJson += "\n  }";
 
-        System.out.println(newJson);
+
+        for (int i = 0; i < arr.size(); i++) {
+            JsonElement element = arr.get(i).getAsJsonObject();
+            JsonObject jo = element.getAsJsonObject();
+            JsonElement elementnew = "{\"tags\":[\"perl\",\"excel\",\"xlsx\"],\"owner\":{\"reputation\":96,\"user_id\":1957542,\"user_type\":\"registered\",\"accept_rate\":71,\"profile_image\":\"https://www.gravatar.com/avatar/ad7edfe578fee5a8db4dc34c3e57eae7?s=128&d=identicon&r=PG\",\"display_name\":\"MiSo\",\"link\":\"http://stackoverflow.com/users/1957542/miso\"},\"is_answered\":false,\"view_count\":2348,\"answer_count\":2,\"score\":5,\"creation_date\":1379605169,\"last_edit_date\":1424332336,\"question_id\":18899136,\"link\":\"http://stackoverflow.com/questions/18899136/modifying-xlsx-file-with-perl\",\"title\":\"BLA BLA\"}";
+            }
+
+
+
+
+
+
+/*
+
+        ObjectMapper om = new ObjectMapper();
+        try {
+            Map<String, Object> m1 = (Map<String, Object>)(om.readValue(json, Map.class));
+            Map<String, Object> m2 = (Map<String, Object>)(om.readValue(newJson, Map.class));
+            System.out.println(m1);
+            System.out.println(m2);
+            System.out.println(m1.equals(m2));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
+
 
     }
-
-
-//    ],
-//            "has_more": true,
-//            "quota_max": 300,
-//            "quota_remaining": 299
-
-
 
 
 //    @Test
