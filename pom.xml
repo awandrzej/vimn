@@ -42,37 +42,6 @@
             <version>1.3.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20090211</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>LATEST</version>
-        </dependency>
-
-
-
-        <dependency>
-        <groupId>com.flipkart.zjsonpatch</groupId>
-        <artifactId>zjsonpatch</artifactId>
-        <version>0.2.1</version>
-        </dependency>
-
     </dependencies>
 
 

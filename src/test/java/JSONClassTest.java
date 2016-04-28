@@ -1,27 +1,17 @@
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.flipkart.zjsonpatch.JsonPatch;
 import com.google.gson.*;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.SSLConfig;
-import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.ParseException;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 
 /**
