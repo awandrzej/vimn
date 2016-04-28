@@ -15,8 +15,11 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
@@ -44,7 +47,6 @@ public class JSONClassTest {
     public void duplicateJson() throws ParseException {
         printHeader("New json with titles CREATING NEW JSON for each of the items, remove last_activity_date, compare old and new json");
         String newJson = "{\"items\": [\n";
-
         JsonArray arr = jsonObject.getAsJsonArray("items");
         for (int i = 0; i < arr.size(); i++) {
             JsonElement element = arr.get(i).getAsJsonObject();
@@ -62,39 +64,47 @@ public class JSONClassTest {
 
         jsonObject = new JsonParser().parse(json).getAsJsonObject();
         arr = jsonObject.getAsJsonArray("items");
-        jsonObject = new JsonParser().parse(newJson).getAsJsonObject();
-        JsonArray arrNewJson = jsonObject.getAsJsonArray("items");
+        JsonObject jsonObjectNew = new JsonParser().parse(newJson).getAsJsonObject();
+        JsonArray arrNew = jsonObjectNew.getAsJsonArray("items");
 
-        for (int i = 0; i < 1; i++) {
-            String element = arr.get(i).getAsJsonObject().toString();
-            String elementNewJson = arrNewJson.get(i).getAsJsonObject().toString();
+        for (int i = 0; i < arr.size() ; i++) {
+            JsonElement element = arr.get(i).getAsJsonObject();
+            Gson gson = new Gson();
+            String json = element.toString();
 
-            String s = StringUtils.difference(elementNewJson, element);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map = (Map<String, Object>) gson.fromJson(json, map.getClass());
+            map = (Map<String, Object>) gson.fromJson(json, map.getClass());
 
-            System.out.println(element);
-            System.out.println(elementNewJson);
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                JsonElement elementNew = arrNew.get(i).getAsJsonObject().get(entry.getKey());
+                JsonElement elementOld = arr.get(i).getAsJsonObject().get(entry.getKey());
 
-            System.out.println(s);
+                String eOld = elementOld == null ? "no item" : elementOld.toString();
+                String eNew = elementNew == null ? "no item" : elementNew.toString();
+
+                if (!eNew.equalsIgnoreCase(eOld)) {
+                    System.out.println("-----------------------------------------");
+                    System.out.println("item:"+entry.getKey());
+
+                    System.out.println("old Json value:"+eOld);
+                    System.out.println("new Json value:"+eNew);
+
+                }
+
+            }
         }
+    }
 
-
-
-        }
-
-/*
-
-    @Test
-
-    public void checkProfileImage() {
+        @Test
+        public void checkProfileImage() {
         printHeader("Each owner has a profile_image and link values: verify that these urls are valid");
         boolean testOk = true;
         JsonArray arr = jsonObject.getAsJsonArray("items");
         for (int i = 0; i < arr.size(); i++) {
             String element = arr.get(i).getAsJsonObject().get("owner").getAsJsonObject().get("profile_image").toString().replace("\"", "");
             System.out.println(element);
-            */
-/*rest-assured*//*
-
+            /*rest-assured*/
             int statusCode =
                     given().config(RestAssured.config().sslConfig(
                             new SSLConfig().allowAllHostnames())).then().
@@ -125,9 +135,6 @@ public class JSONClassTest {
             System.out.println(tag);
         }
     }
-*/
-
-
     /*print test header*/
 
     public void printHeader(String title) {
