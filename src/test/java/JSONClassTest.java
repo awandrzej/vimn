@@ -1,8 +1,12 @@
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.flipkart.zjsonpatch.JsonPatch;
 import com.google.gson.*;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.SSLConfig;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.parser.ParseException;
 
 import org.junit.Assert;
@@ -22,7 +26,6 @@ import static com.jayway.restassured.RestAssured.given;
  */
 public class JSONClassTest {
 
-
     String json;
     JsonObject jsonObject;
     GetJSON getJSON;
@@ -37,20 +40,18 @@ public class JSONClassTest {
     }
 
     @Test
-    /*
-    Generate a new json that will be equal to the given one except for the title, that will be „CREATING NEW JSON” for each of the items.*//*
-    */
-    public void duplicateJson() throws ParseException {
 
+    public void duplicateJson() throws ParseException {
+        printHeader("New json with titles CREATING NEW JSON for each of the items, remove last_activity_date, compare old and new json");
         String newJson = "{\"items\": [\n";
 
         JsonArray arr = jsonObject.getAsJsonArray("items");
         for (int i = 0; i < arr.size(); i++) {
             JsonElement element = arr.get(i).getAsJsonObject();
-            JsonObject jo = element.getAsJsonObject();
-            jo.addProperty("title", "Creating new JSON");
-            jo.remove("last_activity_date");
-            newJson += jo.toString();
+            JsonObject jObject = element.getAsJsonObject();
+            jObject.addProperty("title", "Creating new JSON");
+            jObject.remove("last_activity_date");
+            newJson += jObject.toString();
             if ((i < arr.size() - 1)) newJson += ",";
         }
         newJson += "],";
@@ -59,8 +60,28 @@ public class JSONClassTest {
         newJson += "\n \"quota_remaining\":" + jsonObject.getAsJsonPrimitive("quota_remaining");
         newJson += "\n  }";
 
-    }
+        jsonObject = new JsonParser().parse(json).getAsJsonObject();
+        arr = jsonObject.getAsJsonArray("items");
+        jsonObject = new JsonParser().parse(newJson).getAsJsonObject();
+        JsonArray arrNewJson = jsonObject.getAsJsonArray("items");
 
+        for (int i = 0; i < 1; i++) {
+            String element = arr.get(i).getAsJsonObject().toString();
+            String elementNewJson = arrNewJson.get(i).getAsJsonObject().toString();
+
+            String s = StringUtils.difference(elementNewJson, element);
+
+            System.out.println(element);
+            System.out.println(elementNewJson);
+
+            System.out.println(s);
+        }
+
+
+
+        }
+
+/*
 
     @Test
 
@@ -71,7 +92,9 @@ public class JSONClassTest {
         for (int i = 0; i < arr.size(); i++) {
             String element = arr.get(i).getAsJsonObject().get("owner").getAsJsonObject().get("profile_image").toString().replace("\"", "");
             System.out.println(element);
-            /*rest-assured*/
+            */
+/*rest-assured*//*
+
             int statusCode =
                     given().config(RestAssured.config().sslConfig(
                             new SSLConfig().allowAllHostnames())).then().
@@ -97,10 +120,12 @@ public class JSONClassTest {
                 if (!tags.toString().contains(element.getAsString())) tags.add(element.getAsString());
             }
         }
-        System.out.print("tags without duplicates that should be removed:");
-        System.out.println(tags.toString());
-
+        System.out.println("tags without duplicates that should be removed:\n");
+        for (String tag : tags) {
+            System.out.println(tag);
+        }
     }
+*/
 
 
     /*print test header*/
