@@ -35,22 +35,17 @@ public class JSONClassTest {
     @Test
 
     public void duplicateJson() throws ParseException {
-        printHeader("New json with titles CREATING NEW JSON for each of the items, remove last_activity_date, compare old and new json");
-        String newJson = "{\"items\": [\n";
+        printHeader("New json with TITLE: CREATING NEW JSON for each of the items, LAST_ACTIVITY_DATE removed, compare old and new json");
+        String newJson = null;
         JsonArray arr = jsonObject.getAsJsonArray("items");
         for (int i = 0; i < arr.size(); i++) {
             JsonElement element = arr.get(i).getAsJsonObject();
             JsonObject jObject = element.getAsJsonObject();
             jObject.addProperty("title", "Creating new JSON");
             jObject.remove("last_activity_date");
-            newJson += jObject.toString();
-            if ((i < arr.size() - 1)) newJson += ",";
         }
-        newJson += "],";
-        newJson += "\n \"has_more\":" + jsonObject.getAsJsonPrimitive("has_more") + ",";
-        newJson += "\n \"quota_max\":" + jsonObject.getAsJsonPrimitive("quota_max") + ",";
-        newJson += "\n \"quota_remaining\":" + jsonObject.getAsJsonPrimitive("quota_remaining");
-        newJson += "\n  }";
+
+        newJson= jsonObject.toString();
 
         jsonObject = new JsonParser().parse(json).getAsJsonObject();
         arr = jsonObject.getAsJsonArray("items");
